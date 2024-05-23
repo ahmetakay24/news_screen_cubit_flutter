@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 class News {
   String? title;
   String? link;
-  List<String>? creator;
+  List<dynamic>? creator;
   String? description;
   String? pubDate;
   String? imageUrl;
@@ -12,25 +12,20 @@ class News {
 
   News({this.title, this.link, this.creator, this.description, this.pubDate, this.imageUrl, this.sourceIcon});
 
-  News.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    link = json['link'];
-    creator = json['creator'].cast<String>();
-    description = json['description'];
-    pubDate = json['pubDate'];
-    imageUrl = json['image_url'];
-    sourceIcon = json['source_icon'];
+  factory News.fromJson(dynamic json) {
+    return News(
+        title: json["title"] as String?,
+        link: json["link"] as String?,
+        creator: json["creator"] as List<dynamic>?,
+        description: json["description"] as String?,
+        pubDate: json["pubDate"] as String?,
+        imageUrl: json["imageUrl"] as String?,
+        sourceIcon: json["sourceIcon"] as String? ??
+            "https://avatars.slack-edge.com/2020-04-21/1069616724710_52d32ecfe70c3c33b443_512.png");
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['title'] = title;
-    data['link'] = link;
-    data['creator'] = creator;
-    data['description'] = description;
-    data['pubDate'] = pubDate;
-    data['image_url'] = imageUrl;
-    data['source_icon'] = sourceIcon;
-    return data;
+  @override
+  String toString() {
+    return "{$title,$link,$creator,$description,$pubDate,$imageUrl,$sourceIcon";
   }
 }

@@ -11,7 +11,7 @@ class NewsLoading extends NewsState {
 }
 
 class NewsCompleted extends NewsState {
-  Future<List<News>?> news;
+  List<News>? news;
   NewsCompleted(this.news);
 }
 

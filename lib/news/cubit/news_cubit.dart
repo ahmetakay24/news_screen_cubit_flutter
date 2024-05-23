@@ -12,7 +12,7 @@ class NewsCubit extends Cubit<NewsState> {
     try {
       emit(NewsLoading());
       await Future.delayed(const Duration(milliseconds: 500));
-      final response = NewsService().getNews();
+      final response = await NewsService().getNews();
       emit(NewsCompleted(response));
     } catch (e) {
       emit(NewsError("Error"));

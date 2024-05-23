@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:bloc_exercise/news/model/news_model.dart';
 import 'package:dio/dio.dart';
 
@@ -13,12 +15,16 @@ class NewsService {
     final response = await dio.get(newsUrl);
 
     if (response.statusCode == HttpStatus.ok) {
-      final data = response.data["results"] as List;
-      final news = data
-          .map(
-            (e) => News.fromJson(e),
-          )
-          .toList();
+      final data = jsonDecode(response.toString())["results"] as List;
+      final news = await Isolate.run(
+        () {
+          return data
+              .map(
+                (e) => News.fromJson(e),
+              )
+              .toList();
+        },
+      );
       return news;
     } else {
       return null;
