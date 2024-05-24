@@ -3,29 +3,24 @@ import 'package:json_annotation/json_annotation.dart';
 @JsonSerializable()
 class News {
   String? title;
-  String? link;
-  List<dynamic>? creator;
-  String? description;
-  String? pubDate;
-  String? imageUrl;
-  String? sourceIcon;
+  String? url;
+  String? time_published;
+  String? banner_image;
 
-  News({this.title, this.link, this.creator, this.description, this.pubDate, this.imageUrl, this.sourceIcon});
+  News(this.title, this.url, this.time_published, this.banner_image);
 
   factory News.fromJson(dynamic json) {
     return News(
-        title: json["title"] as String?,
-        link: json["link"] as String?,
-        creator: json["creator"] as List<dynamic>?,
-        description: json["description"] as String?,
-        pubDate: json["pubDate"] as String?,
-        imageUrl: json["imageUrl"] as String?,
-        sourceIcon: json["sourceIcon"] as String? ??
-            "https://avatars.slack-edge.com/2020-04-21/1069616724710_52d32ecfe70c3c33b443_512.png");
+        json["title"] as String,
+        json["url"] as String,
+        json["time_published"] as String,
+        json["banner_image"] != null
+            ? json["banner_image"] as String
+            : "https://cdn.pixabay.com/photo/2014/04/02/17/08/globe-308065_960_720.png");
   }
 
   @override
   String toString() {
-    return "{$title,$link,$creator,$description,$pubDate,$imageUrl,$sourceIcon";
+    return "{$title,$url,$time_published,$banner_image";
   }
 }

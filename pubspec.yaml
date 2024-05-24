@@ -50,6 +50,12 @@ dependencies:
 
   #Date
   date_time_format: ^2.0.1
+
+  #Text
+  auto_size_text: ^3.0.0
+
+  #Url
+  url_launcher: ^6.2.6
   
 
 dev_dependencies:

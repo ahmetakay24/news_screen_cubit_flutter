@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:date_time_format/date_time_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -23,6 +24,9 @@ class _NewsScreenState extends State<NewsScreen> {
   Scaffold buildScaffold(BuildContext context) => Scaffold(
         appBar: AppBar(
           elevation: 0,
+          leading: CachedNetworkImage(
+            imageUrl: "https://avatars.slack-edge.com/2020-04-21/1069616724710_52d32ecfe70c3c33b443_512.png",
+          ),
           title: const Text("News"),
         ),
         body: BlocConsumer<NewsCubit, NewsState>(
@@ -71,11 +75,9 @@ class _NewsScreenState extends State<NewsScreen> {
                                 flex: 7,
                               ),
                               Expanded(
-                                flex: 20,
+                                flex: 25,
                                 child: Row(
                                   children: [
-                                    Expanded(
-                                        child: CachedNetworkImage(imageUrl: state.news![index].sourceIcon.toString())),
                                     Expanded(
                                       child: Text(
                                         state.news![index].title.toString(),
@@ -99,27 +101,68 @@ class _NewsScreenState extends State<NewsScreen> {
                               ),
                               Expanded(
                                   flex: 40,
-                                  child: Text(
-                                    state.news![index].description.toString(),
-                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                                  child: CachedNetworkImage(
+                                    imageUrl: state.news![index].banner_image.toString(),
+                                    placeholder: (context, url) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.black,
+                                          strokeWidth: 2,
+                                        ),
+                                      );
+                                    },
+                                    errorWidget: (context, url, error) {
+                                      return Image.network(
+                                          "https://cdn.pixabay.com/photo/2014/04/02/17/08/globe-308065_960_720.png");
+                                    },
                                   )),
                               const Spacer(
                                 flex: 1,
                               ),
-                              const Expanded(flex: 5, child: Text("World News")),
                               Expanded(
                                   flex: 20,
                                   child: Row(
                                     children: [
                                       Expanded(
+                                        flex: 100,
                                         child: Text(
-                                            "Date : ${DateTimeFormat.format(DateTime.parse(state.news![index].pubDate.toString()), format: 'D, M j, H:i')}"),
+                                          "Date : ${DateTimeFormat.format(DateTime.parse(state.news![index].time_published.toString()), format: 'D, M j, H:i')}",
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),
+                                        ),
                                       ),
+                                      const Spacer(),
                                       const Expanded(
+                                          flex: 5,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(vertical: 20),
+                                            child: VerticalDivider(),
+                                          )),
+                                      const Spacer(
+                                        flex: 5,
+                                      ),
+                                      Expanded(
+                                        flex: 85,
                                         child: Row(
                                           children: [
-                                            Expanded(child: Text("For more :")),
-                                            Expanded(child: TextButton(onPressed: null, child: Text("Click")))
+                                            Text(
+                                              "For more :",
+                                              style:
+                                                  Theme.of(context).textTheme.titleSmall?.copyWith(color: Colors.white),
+                                            ),
+                                            TextButton(
+                                                onPressed: () async {
+                                                  final Uri url = Uri.parse(state.news![index].url.toString());
+                                                  if (await canLaunchUrl(url)) {
+                                                    await launchUrl(url);
+                                                  } else {
+                                                    throw "Could not open $url";
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Click",
+                                                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                                      color: Colors.white, decoration: TextDecoration.underline),
+                                                )),
                                           ],
                                         ),
                                       )
