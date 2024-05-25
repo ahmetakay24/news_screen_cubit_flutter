@@ -1,13 +1,20 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:bloc_exercise/news/model/news_model.dart';
 import 'package:dio/dio.dart';
 
-class NewsService {
+abstract class NewsRepository {
+  Future<List<News>?> getNews();
+}
+
+class SampleNewsRepository extends NewsRepository {
   final Dio dio = Dio();
 
   final String newsUrl = "https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=6TXCUCZLP7O5FZDS";
+
+  @override
   Future<List<News>?> getNews() async {
     dio.options.responseType = ResponseType.json;
     final response = await dio.get(newsUrl);
@@ -25,6 +32,7 @@ class NewsService {
       );
       return news;
     } else {
+      log('Dio error: ${response.statusCode} - ${response.data}');
       return null;
     }
   }
